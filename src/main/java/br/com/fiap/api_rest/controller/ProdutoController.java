@@ -1,5 +1,6 @@
 package br.com.fiap.api_rest.controller;
 
+import br.com.fiap.api_rest.dto.ProdutoLista;
 import br.com.fiap.api_rest.dto.ProdutoRequest;
 import br.com.fiap.api_rest.dto.ProdutoResponse;
 import br.com.fiap.api_rest.model.Produto;
@@ -48,10 +49,10 @@ public class ProdutoController {
     // PageAnterior: localhost:8080/produtos?pageNumber=0
     // PageSeguinte: null
     @GetMapping
-    public ResponseEntity<Page<ProdutoResponse>> readProduto(@RequestParam(defaultValue = "0") Integer pageNumber) {
+    public ResponseEntity<Page<ProdutoLista>> readProduto(@RequestParam(defaultValue = "0") Integer pageNumber) {
         // page number, page size, sort
         Pageable pageable = PageRequest.of(pageNumber, 2, Sort.by("nome").ascending());
-        Page<ProdutoResponse> produtos = produtoService.read(pageable);
+        Page<ProdutoLista> produtos = produtoService.read(pageable);
         if (produtos.isEmpty()) {
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

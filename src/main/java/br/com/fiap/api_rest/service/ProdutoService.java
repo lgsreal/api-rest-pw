@@ -1,5 +1,6 @@
 package br.com.fiap.api_rest.service;
 
+import br.com.fiap.api_rest.dto.ProdutoLista;
 import br.com.fiap.api_rest.dto.ProdutoRequest;
 import br.com.fiap.api_rest.dto.ProdutoResponse;
 import br.com.fiap.api_rest.mapper.ProdutoMapper;
@@ -43,10 +44,10 @@ public class ProdutoService {
     }
 
     // Page, Pageable
-    public Page<ProdutoResponse> read(Pageable pageable) {
+    public Page<ProdutoLista> read(Pageable pageable) {
         return produtoRepository
                 .findAll(pageable)
-                .map(produtoMapper::produtoToResponse);
+                .map(produtoMapper::produtoToProdutoLista);
     }
 
     /*
