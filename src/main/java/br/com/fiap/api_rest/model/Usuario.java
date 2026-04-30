@@ -32,6 +32,15 @@ public class Usuario implements UserDetails {
         }
     }
 
+    public Usuario() {
+    }
+
+    public Usuario(String login, String senha, UserRole role) {
+        this.login = login;
+        this.senha = senha;
+        this.role = role;
+    }
+
     @Override
     public @Nullable String getPassword() {
         return "";
