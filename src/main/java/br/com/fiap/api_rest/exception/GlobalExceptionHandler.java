@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErroResponse> handleAccessDenied(AccessDeniedException ex,
                                                            HttpServletRequest request) {
         return build(HttpStatus.FORBIDDEN, "Acesso negado", request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErroResponse> handleAutenticacao(AuthenticationException ex,
+                                                           HttpServletRequest request) {
+        return build(HttpStatus.FORBIDDEN, "Credenciais inválidas", request);
     }
 
     @ExceptionHandler(Exception.class)

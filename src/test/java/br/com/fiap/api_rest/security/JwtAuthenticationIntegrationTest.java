@@ -61,6 +61,26 @@ class JwtAuthenticationIntegrationTest {
     }
 
     @Test
+    void deveResponderForbiddenParaSenhaIncorreta() throws Exception {
+        token("admin2", UserRole.ADMIN);
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new AuthDTO("admin2", "senha-errada"))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.path").value("/auth/login"));
+    }
+
+    @Test
+    void deveResponderForbiddenParaLoginInexistente() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new AuthDTO("nao-existe", "senha123"))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void deveLiberarDocumentacaoSemAutenticacao() throws Exception {
         mockMvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk());
