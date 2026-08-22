@@ -13,6 +13,7 @@ import br.com.fiap.api_rest.repository.ProdutoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class EstoqueService {
         this.estoqueMapper = estoqueMapper;
     }
 
+    @Transactional
     public EstoqueResponse create(EstoqueRequest estoqueRequest) {
         Produto produto = buscarProduto(estoqueRequest.produtoId());
         estoqueRepository.findByProdutoId(produto.getId()).ifPresent(estoque -> {
@@ -57,6 +59,7 @@ public class EstoqueService {
         return estoqueRepository.findAll(pageable).map(estoqueMapper::estoqueToEstoqueLista);
     }
 
+    @Transactional
     public EstoqueResponse update(UUID id, EstoqueRequest estoqueRequest) {
         Estoque estoque = buscarEstoque(id);
         Produto produto = buscarProduto(estoqueRequest.produtoId());
@@ -66,8 +69,16 @@ public class EstoqueService {
         return estoqueMapper.estoqueToResponse(estoqueRepository.save(estoque));
     }
 
+    @Transactional
     public void delete(UUID id) {
-        estoqueRepository.delete(buscarEstoque(id));
+        Estoque estoque = buscarEstoque(id);
+        Produto produto = estoque.getProduto();
+        if (produto != null) {
+            produto.setEstoque(null);
+            estoque.setProduto(null);
+        }
+        estoqueRepository.delete(estoque);
+        estoqueRepository.flush();
     }
 
     private Estoque buscarEstoque(UUID id) {

@@ -2,6 +2,8 @@ package br.com.fiap.api_rest.exception;
 
 import br.com.fiap.api_rest.dto.ErroResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
     public ResponseEntity<ErroResponse> handleRecursoNaoEncontrado(RecursoNaoEncontradoException ex,
@@ -46,6 +50,7 @@ public class GlobalExceptionHandler {
         if (ex instanceof ErrorResponse) {
             throw ex;
         }
+        log.error("Erro nao tratado em {}", request == null ? "?" : request.getRequestURI(), ex);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor", request);
     }
 
