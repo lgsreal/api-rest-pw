@@ -1,5 +1,6 @@
 package br.com.fiap.api_rest.controller;
 
+import br.com.fiap.api_rest.dto.ErroResponse;
 import br.com.fiap.api_rest.dto.ProdutoLista;
 import br.com.fiap.api_rest.dto.ProdutoRequest;
 import br.com.fiap.api_rest.dto.ProdutoResponse;
@@ -40,13 +41,19 @@ public class ProdutoController {
     }
 
     @Operation(summary = "Busca um produto por id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Produto encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProdutoResponse.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "Produto n\u00e3o encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroResponse.class)))
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponse> readProduto(@PathVariable UUID id) {
-        ProdutoResponse produto = produtoService.read(id);
-        if (produto == null) {
-            return new ResponseEntity<>(produto, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(produto, HttpStatus.OK);
+        return new ResponseEntity<>(produtoService.read(id), HttpStatus.OK);
     }
 
     // @PathVariable localhost:8080/produtos/1
@@ -80,17 +87,32 @@ public class ProdutoController {
     }
 
     @Operation(summary = "Atualiza um produto específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Produto atualizado com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Produto.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "Produto n\u00e3o encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroResponse.class)))
+    })
     @PutMapping
     public ResponseEntity<Produto> updateProduto(@RequestBody Produto produto) {
-        ProdutoResponse produtoExistente = produtoService.read(produto.getId());
-        if (produtoExistente == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         Produto produtoAtualizado = produtoService.update(produto);
         return new ResponseEntity<>(produtoAtualizado, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Exclui um produto por id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Produto exclu\u00eddo com sucesso",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404",
+                    description = "Produto n\u00e3o encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroResponse.class)))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduto(@PathVariable UUID id) {
         produtoService.delete(id);
