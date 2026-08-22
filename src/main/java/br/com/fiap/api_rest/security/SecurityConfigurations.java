@@ -11,19 +11,25 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
 
+    private static final String[] DOCUMENTACAO = {
+            "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**"
+    };
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter) {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth
+                                .requestMatchers(DOCUMENTACAO).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/produtos").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/estoques/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/estoques/**").hasRole("ADMIN")
@@ -37,6 +43,7 @@ public class SecurityConfigurations {
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                                 .anyRequest().authenticated()
                 )
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
