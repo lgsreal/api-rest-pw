@@ -22,6 +22,14 @@ public class Usuario implements UserDetails {
     private String senha;
     private UserRole role;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (UserRole.ADMIN.equals(this.role)) {

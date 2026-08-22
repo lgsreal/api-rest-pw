@@ -21,7 +21,8 @@ public class Produto {
     @Column(name = "data_validade")
     private LocalDate expiracao;
     private Categoria categoria;
-    private int estoque;
+    @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
+    private Estoque estoque;
     @ManyToMany(mappedBy = "produtos")
     private List<Pedido> pedidos;
 
@@ -61,11 +62,11 @@ public class Produto {
         return categoria;
     }
 
-    public int getEstoque() {
+    public Estoque getEstoque() {
         return estoque;
     }
 
-    public void setEstoque(int estoque) {
+    public void setEstoque(Estoque estoque) {
         this.estoque = estoque;
     }
 

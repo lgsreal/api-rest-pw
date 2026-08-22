@@ -25,6 +25,14 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(HttpMethod.POST, "/produtos").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/estoques/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/estoques/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/estoques/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/estoques/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/carrinhos/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/carrinhos/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/carrinhos/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/carrinhos/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                                 .anyRequest().authenticated()
