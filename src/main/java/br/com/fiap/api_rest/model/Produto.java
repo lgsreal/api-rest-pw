@@ -21,7 +21,7 @@ public class Produto {
     @Column(name = "data_validade")
     private LocalDate expiracao;
     private Categoria categoria;
-    @OneToMany(mappedBy = "produto")
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Estoque> estoques;
     @ManyToMany(mappedBy = "produtos")
     private List<Pedido> pedidos;

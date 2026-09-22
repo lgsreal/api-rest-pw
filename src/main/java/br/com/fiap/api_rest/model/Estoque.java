@@ -19,7 +19,7 @@ public class Estoque {
     @JoinColumn(name = "id_deposito")
     private Deposito deposito;
     private int quantidade;
-    @OneToMany(mappedBy = "estoque")
+    @OneToMany(mappedBy = "estoque", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovimentacaoEstoque> movimentacoes;
 
     public UUID getId() {
